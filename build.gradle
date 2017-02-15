@@ -8,6 +8,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('se.transmode.gradle:gradle-docker:1.2')
 	}
 }
 
@@ -22,18 +23,35 @@ allprojects {
 }
 
 subprojects {
+	apply plugin: 'application'
 	apply plugin: 'spring-boot'
+	apply plugin: 'docker'
 
+	version =  '0.1.0'
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
+
+	applicationDefaultJvmArgs = ['-Xmx1g', '-Xms512m']
 
 	repositories {
 		mavenLocal()
 		mavenCentral()
 	}
 
-	jar {
-		version =  '0.1.0'
+	docker {
+		baseImage "frolvlad/alpine-oraclejdk8:slim"
+		maintainer 'utsman <zeehastory@gmail.com>'
+	}
+
+	task buildDocker(type: Docker, dependsOn: build) {
+		applicationName = jar.baseName
+		push = false
+//		tagVersion = "latest"
+
+		volume "/tmp"
+		addFile("${libsDir}/${project.name}-${version}.jar", "app.jar")
+		runCommand("sh -c 'touch /app.jar'")
+		entryPoint(["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /app.jar"])
 	}
 
 	dependencyManagement {
@@ -42,23 +60,20 @@ subprojects {
 		}
 	}
 	dependencies {
-		testCompile('org.springframework.boot:spring-boot-starter-test')
+		compile 'org.springframework.cloud:spring-cloud-starter-config'
+		testCompile 'org.springframework.boot:spring-boot-starter-test'
 	}
 }
 
 project(':config-server') {
 	dependencies {
 		compile 'org.springframework.cloud:spring-cloud-config-server'
-//		compile 'org.springframework.cloud:spring-cloud-config-monitor'
 		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
-		compile 'org.springframework.cloud:spring-cloud-starter-config'
-//		compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
 	}
 }
 
 project(':discovery-server') {
 	dependencies {
-		compile 'org.springframework.cloud:spring-cloud-starter-config'
 		compile 'org.springframework.cloud:spring-cloud-starter-eureka-server'
 	}
 }
