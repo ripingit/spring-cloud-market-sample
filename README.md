@@ -1,6 +1,10 @@
 # Spring Cloud Sample
 
 
+## Start
+
+
+
 
 ## Config-server
 
@@ -9,36 +13,40 @@ Start the server:
      ./gradlew :config-server:bootRun
      
      
-at browser:
+At browser:
      
      http://localhost:8888
      
 
-build docker:
+Build docker:
      
      ./gradlew :config-server:buildDocker
      
      
+Push Image:
+     
+     ./gradlew :config-server:buildDocker -Ppush
+     
+     
 ## Discovery-server
+
 
 Start the server:
 
      ./gradlew :discovery-server:bootRun
      
      
-at browser:
+At browser:
      
      http://localhost:8888
      
 
-build docker:
+Build docker:
      
-     ./gradlew :discovery-server:buildDocker     
+     ./gradlew :discovery-server:buildDocker
      
      
-참고
+Push Image:
      
-     https://github.com/spring-cloud-samples/configserver
-     http://callistaenterprise.se/blogg/teknik/2015/04/10/building-microservices-with-spring-cloud-and-netflix-oss-part-1/
-     http://callistaenterprise.se/blogg/teknik/2015/05/20/blog-series-building-microservices/
-     https://spring.io/guides/gs/spring-boot-docker/
+     ./gradlew :discovery-server:buildDocker -Ppush     
+     

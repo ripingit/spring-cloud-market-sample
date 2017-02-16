@@ -39,13 +39,14 @@ subprojects {
 	}
 
 	docker {
-		baseImage "frolvlad/alpine-oraclejdk8:slim"
+		baseImage "java:8"
 		maintainer 'utsman <zeehastory@gmail.com>'
 	}
 
 	task buildDocker(type: Docker, dependsOn: build) {
-		applicationName = jar.baseName
-		push = false
+		applicationName = "${jar.baseName}"
+		push = project.hasProperty('push')
+		tag = "utsman/${project.rootProject.name}-${applicationName}"
 //		tagVersion = "latest"
 
 		volume "/tmp"
