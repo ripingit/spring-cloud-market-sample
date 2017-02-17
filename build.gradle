@@ -5,6 +5,9 @@ buildscript {
 	repositories {
 		mavenLocal()
 		mavenCentral()
+		jcenter()
+
+		maven { url "http://repo1.maven.org/maven2/" }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -13,12 +16,13 @@ buildscript {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.13'
+	gradleVersion = '2.5'
 }
 
 allprojects {
 	apply plugin: 'maven'
 	apply plugin: 'eclipse'
+	apply plugin: 'jacoco'
 }
 
 subprojects {
@@ -38,11 +42,6 @@ subprojects {
 		mavenCentral()
 	}
 
-//	docker {
-//		baseImage "java:8"
-//		maintainer 'utsman <zeehastory@gmail.com>'
-//	}
-
 	task buildDocker(type: Docker, dependsOn: build) {
 		applicationName = "${jar.baseName}"
 		push = project.hasProperty('push')
@@ -53,12 +52,8 @@ subprojects {
 		dockerfile = file('src/main/docker/Dockerfile')
 		doFirst {
 			copy {
-//				from "build/libs/${applicationName}-${version}.jar"
 				from jar
 				into stageDir
-//				rename { String fileName ->
-//					fileName.replace("-${version}", '')
-//				}
 			}
 		}
 	}
@@ -78,6 +73,27 @@ subprojects {
 		compileOnly "org.projectlombok:lombok:1.16.14"
 		testCompile 'org.springframework.boot:spring-boot-starter-test'
 	}
+
+	test.useTestNG()
+}
+
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+	subprojects.each {
+		sourceSets it.sourceSets.main
+	}
+
+	reports {
+		xml.enabled true
+		xml.destination "${buildDir}/reports/jacoco/report.xml"
+		html.enabled false
+		csv.enabled false
+	}
+}
+
+codeCoverageReport.dependsOn {
+	subprojects*.test
 }
 
 project(':config-server') {
