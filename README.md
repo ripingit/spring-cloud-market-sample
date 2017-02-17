@@ -1,52 +1,36 @@
-# Spring Cloud Sample
+# Spring Cloud Market Sample
 
+## How to run
 
-## Start
-
-
-
-
-## Config-server
+    $ docker-compose up
+    
+#### endpoints
+    
+- http://localhost:8888/statistics-service/docker - Config Server
+- http://localhost:8761 - Eureka Dashboard
+- http://localhost:9000/statistics/bestseller - Demo Api    
+    
+#### Rebuild and create Image in all sub-projects
+    
+    $ ./gradlew buildDocker -Platest
+    
+#### Run individual sub-project
 
 Start the server:
 
-     ./gradlew :config-server:bootRun
-     
-     
-At browser:
-     
-     http://localhost:8888
+     ./gradlew :${sub-project}:bootRun
      
 
 Build docker:
      
-     ./gradlew :config-server:buildDocker
+     ./gradlew :${sub-project}:buildDocker
      
      
-Push Image:
+Push image:
      
-     ./gradlew :config-server:buildDocker -Ppush
-     
-     
-## Discovery-server
-
-
-Start the server:
-
-     ./gradlew :discovery-server:bootRun
-     
-     
-At browser:
-     
-     http://localhost:8888
+     ./gradlew :${sub-project}:buildDocker -Ppush
      
 
-Build docker:
-     
-     ./gradlew :discovery-server:buildDocker
-     
-     
-Push Image:
-     
-     ./gradlew :discovery-server:buildDocker -Ppush     
-     
+Run image: 
+
+     docker run -p ${port}:${port} -d utsman/spring-cloud-market-sample-${sub-project} 
