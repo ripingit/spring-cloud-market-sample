@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.4.0.RELEASE'
+		springBootVersion = '1.5.1.RELEASE'
 	}
 	repositories {
 		mavenLocal()
@@ -17,14 +17,14 @@ task wrapper(type: Wrapper) {
 }
 
 allprojects {
-	apply plugin: 'java'
 	apply plugin: 'maven'
 	apply plugin: 'eclipse'
 }
 
 subprojects {
+	apply plugin: 'java'
 	apply plugin: 'application'
-	apply plugin: 'spring-boot'
+	apply plugin: 'org.springframework.boot'
 	apply plugin: 'docker'
 
 	version =  '0.1.0'
@@ -38,30 +38,44 @@ subprojects {
 		mavenCentral()
 	}
 
-	docker {
-		baseImage "java:8"
-		maintainer 'utsman <zeehastory@gmail.com>'
-	}
+//	docker {
+//		baseImage "java:8"
+//		maintainer 'utsman <zeehastory@gmail.com>'
+//	}
 
 	task buildDocker(type: Docker, dependsOn: build) {
 		applicationName = "${jar.baseName}"
 		push = project.hasProperty('push')
+		if (project.hasProperty("latest")) {
+			tagVersion = "latest"
+		}
 		tag = "utsman/${project.rootProject.name}-${applicationName}"
-//		tagVersion = "latest"
+		dockerfile = file('src/main/docker/Dockerfile')
+		doFirst {
+			copy {
+//				from "build/libs/${applicationName}-${version}.jar"
+				from jar
+				into stageDir
+//				rename { String fileName ->
+//					fileName.replace("-${version}", '')
+//				}
+			}
+		}
+	}
 
-		volume "/tmp"
-		addFile("${libsDir}/${project.name}-${version}.jar", "app.jar")
-		runCommand("sh -c 'touch /app.jar'")
-		entryPoint(["sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -jar /app.jar"])
+	jar {
+		archiveName = "${project.name}.jar"
 	}
 
 	dependencyManagement {
 		imports {
-			mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR4'
+			mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
 		}
 	}
 	dependencies {
+		compile 'org.springframework.boot:spring-boot-starter-actuator'
 		compile 'org.springframework.cloud:spring-cloud-starter-config'
+		compileOnly "org.projectlombok:lombok:1.16.14"
 		testCompile 'org.springframework.boot:spring-boot-starter-test'
 	}
 }
@@ -76,6 +90,12 @@ project(':config-server') {
 project(':discovery-server') {
 	dependencies {
 		compile 'org.springframework.cloud:spring-cloud-starter-eureka-server'
+	}
+}
+
+project(':statistics-service') {
+	dependencies {
+		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
 	}
 }
 
