@@ -1,5 +1,8 @@
 # Spring Cloud Market Sample
 
+[![Build Status](https://travis-ci.org/utsman/spring-cloud-market-sample.svg?branch=master)](https://travis-ci.org/utsman/spring-cloud-market-sample)
+[![codecov.io](https://codecov.io/github/utsman/spring-cloud-market-sample.svg?branch=master)](https://codecov.io/github/utsman/spring-cloud-market-sample.svg?branch=master)
+
 ## How to run
 
     $ docker-compose up
