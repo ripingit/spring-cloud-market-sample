@@ -1,0 +1,26 @@
+version: '2'
+services:
+  config:
+    image: utsman/spring-cloud-market-sample-config-server
+    restart: always
+    ports:
+      - 8888:8888
+
+
+  discovery:
+    environment:
+      CONFIG_SERVER_URL: http://config:8888
+    image: utsman/spring-cloud-market-sample-discovery-server
+    restart: always
+    ports:
+      - 8761:8761
+
+  statistics-service:
+    environment:
+      PORT: 9000
+      JAVA_OPTS: "-Xmx256m -Xms128m"
+      SPRING_PROFILES_ACTIVE: docker
+    image: utsman/spring-cloud-market-sample-statistics-service
+    restart: always
+    ports:
+      - 9000:9000
