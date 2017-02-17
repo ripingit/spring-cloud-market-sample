@@ -1,23 +1,36 @@
-# Spring Cloud Sample
+# Spring Cloud Market Sample
 
+## How to run
 
-
-## Config-server
+    $ docker-compose up
+    
+#### endpoints
+    
+- http://localhost:8888/statistics-service/docker - Config Server
+- http://localhost:8761 - Eureka Dashboard
+- http://localhost:9000/statistics/bestseller - Demo Api    
+    
+#### Rebuild and create Image in all sub-projects
+    
+    $ ./gradlew buildDocker -Platest
+    
+#### Run individual sub-project
 
 Start the server:
 
-     ./gradlew :eureka:bootRun
+     ./gradlew :${sub-project}:bootRun
+     
+
+Build docker:
+     
+     ./gradlew :${sub-project}:buildDocker
      
      
-at browser:
+Push image:
      
-     http://localhost:8888
+     ./gradlew :${sub-project}:buildDocker -Ppush
      
-     
-     
-     
-참고
-     
-     https://github.com/spring-cloud-samples/configserver
-     http://callistaenterprise.se/blogg/teknik/2015/04/10/building-microservices-with-spring-cloud-and-netflix-oss-part-1/
-     http://callistaenterprise.se/blogg/teknik/2015/05/20/blog-series-building-microservices/
+
+Run image: 
+
+     docker run -p ${port}:${port} -d utsman/spring-cloud-market-sample-${sub-project} 

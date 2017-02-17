@@ -2,3 +2,4 @@ rootProject.name = 'spring-cloud-market-sample'
 
 include "config-server"
 include "discovery-server"
+include "statistics-service"

@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '1.4.0.RELEASE'
+		springBootVersion = '1.5.1.RELEASE'
 	}
 	repositories {
 		mavenLocal()
@@ -8,6 +8,7 @@ buildscript {
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('se.transmode.gradle:gradle-docker:1.2')
 	}
 }
 
@@ -16,50 +17,85 @@ task wrapper(type: Wrapper) {
 }
 
 allprojects {
-	apply plugin: 'java'
 	apply plugin: 'maven'
 	apply plugin: 'eclipse'
 }
 
 subprojects {
-	apply plugin: 'spring-boot'
+	apply plugin: 'java'
+	apply plugin: 'application'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'docker'
 
+	version =  '0.1.0'
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
+
+	applicationDefaultJvmArgs = ['-Xmx1g', '-Xms512m']
 
 	repositories {
 		mavenLocal()
 		mavenCentral()
 	}
 
+//	docker {
+//		baseImage "java:8"
+//		maintainer 'utsman <zeehastory@gmail.com>'
+//	}
+
+	task buildDocker(type: Docker, dependsOn: build) {
+		applicationName = "${jar.baseName}"
+		push = project.hasProperty('push')
+		if (project.hasProperty("latest")) {
+			tagVersion = "latest"
+		}
+		tag = "utsman/${project.rootProject.name}-${applicationName}"
+		dockerfile = file('src/main/docker/Dockerfile')
+		doFirst {
+			copy {
+//				from "build/libs/${applicationName}-${version}.jar"
+				from jar
+				into stageDir
+//				rename { String fileName ->
+//					fileName.replace("-${version}", '')
+//				}
+			}
+		}
+	}
+
 	jar {
-		version =  '0.1.0'
+		archiveName = "${project.name}.jar"
 	}
 
 	dependencyManagement {
 		imports {
-			mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR4'
+			mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR5'
 		}
 	}
 	dependencies {
-		testCompile('org.springframework.boot:spring-boot-starter-test')
+		compile 'org.springframework.boot:spring-boot-starter-actuator'
+		compile 'org.springframework.cloud:spring-cloud-starter-config'
+		compileOnly "org.projectlombok:lombok:1.16.14"
+		testCompile 'org.springframework.boot:spring-boot-starter-test'
 	}
 }
 
 project(':config-server') {
 	dependencies {
 		compile 'org.springframework.cloud:spring-cloud-config-server'
-//		compile 'org.springframework.cloud:spring-cloud-config-monitor'
 		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
-		compile 'org.springframework.cloud:spring-cloud-starter-config'
-//		compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
 	}
 }
 
 project(':discovery-server') {
 	dependencies {
-		compile 'org.springframework.cloud:spring-cloud-starter-config'
 		compile 'org.springframework.cloud:spring-cloud-starter-eureka-server'
+	}
+}
+
+project(':statistics-service') {
+	dependencies {
+		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
 	}
 }
 

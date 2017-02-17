@@ -1,5 +1,8 @@
 server:
   port: ${PORT:8888}
+management:
+  security:
+    enabled: false
 spring:
   cloud:
     config:
