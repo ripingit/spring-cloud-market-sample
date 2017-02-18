@@ -16,31 +16,34 @@ buildscript {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.5'
+	gradleVersion = '2.14.1'
 }
 
 allprojects {
 	apply plugin: 'maven'
 	apply plugin: 'eclipse'
 	apply plugin: 'jacoco'
-}
-
-subprojects {
 	apply plugin: 'java'
-	apply plugin: 'application'
-	apply plugin: 'org.springframework.boot'
-	apply plugin: 'docker'
-
-	version =  '0.1.0'
-	sourceCompatibility = '1.8'
-	targetCompatibility = '1.8'
-
-	applicationDefaultJvmArgs = ['-Xmx1g', '-Xms512m']
 
 	repositories {
 		mavenLocal()
 		mavenCentral()
+		jcenter()
+
+		maven { url "http://repo1.maven.org/maven2/" }
 	}
+
+	version =  '0.1.0'
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+}
+
+subprojects {
+	apply plugin: 'application'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'docker'
+
+	applicationDefaultJvmArgs = ['-Xmx1g', '-Xms512m']
 
 	task buildDocker(type: Docker, dependsOn: build) {
 		applicationName = "${jar.baseName}"
@@ -72,28 +75,11 @@ subprojects {
 		compile 'org.springframework.cloud:spring-cloud-starter-config'
 		compileOnly "org.projectlombok:lombok:1.16.14"
 		testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+		compile group: 'org.jacoco', name: 'org.jacoco.agent', version: '0.7.5.201505241946'
 	}
 
 	test.useTestNG()
-}
-
-task codeCoverageReport(type: JacocoReport) {
-	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-	subprojects.each {
-		sourceSets it.sourceSets.main
-	}
-
-	reports {
-		xml.enabled true
-		xml.destination "${buildDir}/reports/jacoco/report.xml"
-		html.enabled false
-		csv.enabled false
-	}
-}
-
-codeCoverageReport.dependsOn {
-	subprojects*.test
 }
 
 project(':config-server') {
@@ -115,4 +101,22 @@ project(':statistics-service') {
 	}
 }
 
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+	subprojects.each {
+		sourceSets it.sourceSets.main
+	}
+
+	reports {
+		xml.enabled true
+		xml.destination "${buildDir}/reports/jacoco/report.xml"
+		html.enabled false
+		csv.enabled false
+	}
+}
+
+codeCoverageReport.dependsOn {
+	subprojects*.test
+}
 
