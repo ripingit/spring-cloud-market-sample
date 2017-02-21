@@ -94,6 +94,7 @@ project(':discovery-server') {
 project(':statistics-service') {
 	dependencies {
 		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
+		compile 'com.google.guava:guava:21.0'
 	}
 }
 
