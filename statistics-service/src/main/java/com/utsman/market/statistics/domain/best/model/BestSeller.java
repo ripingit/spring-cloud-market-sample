@@ -1,4 +1,4 @@
-package com.utsman.market.statistics.domain;
+package com.utsman.market.statistics.domain.best.model;
 
 import lombok.Builder;
 import lombok.Getter;
