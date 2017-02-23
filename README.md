@@ -9,9 +9,10 @@
     
 #### endpoints
     
-- http://localhost:8888/statistics-service/docker - Config Server
+- http://localhost:8888/statistics-service/default - Config Server
 - http://localhost:8761 - Eureka Dashboard
-- http://localhost:9000/statistics/bestseller - Demo Api    
+- http://localhost:9000/bestseller - Demo Api
+- http://localhost:8765/statistics/bestseller - Zuul Route    
     
 #### Rebuild and create Image in all sub-projects
     
