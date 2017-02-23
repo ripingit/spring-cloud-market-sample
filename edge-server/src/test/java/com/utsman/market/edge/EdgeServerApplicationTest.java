@@ -9,7 +9,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(
         classes = EdgeServerApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        value = {"eureka.client.enabled=false"}
+        value = {
+                "eureka.client.enabled=false",
+                "spring.cloud.config.fail-fast=false"
+        }
 )
 public class EdgeServerApplicationTest {
     @Test
