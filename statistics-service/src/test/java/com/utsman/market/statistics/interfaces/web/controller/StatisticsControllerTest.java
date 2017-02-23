@@ -34,7 +34,7 @@ public class StatisticsControllerTest {
                         .price(25000)
                         .build()));
 
-        mvc.perform(get("/statistics/bestseller")
+        mvc.perform(get("/bestseller")
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"itemName\":\"onepiece\",\"price\":25000}]"));

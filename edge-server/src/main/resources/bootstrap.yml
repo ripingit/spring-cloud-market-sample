@@ -1,6 +1,6 @@
 spring:
   application:
-    name: statistics-service
+    name: edge-service
   cloud:
     config:
       uri: http://localhost:8888

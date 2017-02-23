@@ -1,11 +1,8 @@
 server:
-  port: ${PORT:8888}
-management:
-  security:
-    enabled: false
+  port: 8888
 spring:
   cloud:
     config:
       server:
         git:
-          uri: ${CONFIG_SERVER_GIT_URI:https://github.com/utsman/config-repo}
+          uri: https://github.com/utsman/config-repo

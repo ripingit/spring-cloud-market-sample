@@ -22,6 +22,7 @@ task wrapper(type: Wrapper) {
 allprojects {
 	apply plugin: 'maven'
 	apply plugin: 'eclipse'
+	apply plugin: 'idea'
 	apply plugin: 'jacoco'
 	apply plugin: 'java'
 
@@ -36,6 +37,13 @@ allprojects {
 	version =  '0.1.0'
 	sourceCompatibility = '1.8'
 	targetCompatibility = '1.8'
+
+	idea {
+		module {
+			downloadJavadoc = true
+			downloadSources = true
+		}
+	}
 }
 
 subprojects {
@@ -71,6 +79,8 @@ subprojects {
 		}
 	}
 	dependencies {
+		compile 'com.google.guava:guava:21.0'
+		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
 		compile 'org.springframework.boot:spring-boot-starter-actuator'
 		compile 'org.springframework.cloud:spring-cloud-starter-config'
 		compileOnly "org.projectlombok:lombok:1.16.14"
@@ -81,7 +91,6 @@ subprojects {
 project(':config-server') {
 	dependencies {
 		compile 'org.springframework.cloud:spring-cloud-config-server'
-		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
 	}
 }
 
@@ -93,8 +102,12 @@ project(':discovery-server') {
 
 project(':statistics-service') {
 	dependencies {
-		compile 'org.springframework.cloud:spring-cloud-starter-eureka'
-		compile 'com.google.guava:guava:21.0'
+	}
+}
+
+project(':edge-server') {
+	dependencies {
+		compile 'org.springframework.cloud:spring-cloud-starter-zuul'
 	}
 }
 

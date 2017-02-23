@@ -11,7 +11,6 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/statistics")
 public class StatisticsController {
     @Autowired
     BestSellerService bestSellerService;
