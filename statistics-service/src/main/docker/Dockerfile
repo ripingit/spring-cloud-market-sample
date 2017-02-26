@@ -1,8 +1,11 @@
-FROM java:8
+FROM utsman/spring-cloud-market-sample-base
 VOLUME /tmp
 ADD statistics-service.jar /app.jar
+COPY ./run.sh /run.sh
+RUN chmod u+x /run.sh
 RUN bash -c 'touch /app.jar'
 ENV JAVA_OPTS=""
-ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+
+CMD ["./run.sh"]
 
 EXPOSE 9000
