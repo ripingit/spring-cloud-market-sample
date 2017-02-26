@@ -66,6 +66,10 @@ subprojects {
 				from jar
 				into stageDir
 			}
+			copy {
+				from "src/main/docker/run.sh"
+				into stageDir
+			}
 		}
 	}
 
