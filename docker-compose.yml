@@ -7,8 +7,6 @@ services:
       - 8888:8888
 
   discovery-server:
-    environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
     image: utsman/spring-cloud-market-sample-discovery-server
     restart: always
     ports:
@@ -16,12 +14,13 @@ services:
     command: ["/app/bin/wait-for-it.sh", "-s", "-t", "120", "config-server:8888", "--", "./run.sh"]
     depends_on:
       - config-server
+    extends:
+      file: base.yml
+      service: base
 
   statistics-service:
     environment:
       JAVA_OPTS: "-Xmx256m -Xms256m"
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
-      SPRING_PROFILES_ACTIVE: docker
     image: utsman/spring-cloud-market-sample-statistics-service
     restart: always
     ports:
@@ -29,11 +28,11 @@ services:
     command: ["/app/bin/wait-for-it.sh", "-s", "-t", "120", "edge-server:8765", "--", "./run.sh"]
     depends_on:
       - edge-server
+    extends:
+      file: base.yml
+      service: base
 
   edge-server:
-    environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
-      SPRING_PROFILES_ACTIVE: docker
     image: utsman/spring-cloud-market-sample-edge-server
     restart: always
     ports:
@@ -41,3 +40,18 @@ services:
     command: ["/app/bin/wait-for-it.sh", "-s", "-t", "120", "discovery-server:8761", "--", "./run.sh"]
     depends_on:
       - discovery-server
+    extends:
+      file: base.yml
+      service: base
+
+  monitor:
+    image: utsman/spring-cloud-market-sample-monitor
+    restart: always
+    ports:
+      - 9999:9999
+    command: ["/app/bin/wait-for-it.sh", "-s", "-t", "120", "edge-server:8765", "--", "./run.sh"]
+    depends_on:
+      - edge-server
+    extends:
+      file: base.yml
+      service: base

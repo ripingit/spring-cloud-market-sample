@@ -1,0 +1,6 @@
+version: '2'
+services:
+  base:
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_CLOUD_CONFIG_URI: http://config-server:8888

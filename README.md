@@ -13,6 +13,7 @@
 - http://localhost:8761 - Eureka Dashboard
 - http://localhost:9000/bestseller - Demo Api
 - http://localhost:8765/statistics/bestseller - Zuul Route    
+- http://localhost:9999/hystrix - Hystrix Dashboard  
     
 #### Rebuild and create Image in all sub-projects
     
