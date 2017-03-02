@@ -115,6 +115,12 @@ project(':edge-server') {
 	}
 }
 
+project(':monitor') {
+	dependencies {
+		compile 'org.springframework.cloud:spring-cloud-starter-hystrix-dashboard'
+	}
+}
+
 task codeCoverageReport(type: JacocoReport) {
 	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
