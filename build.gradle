@@ -106,6 +106,7 @@ project(':discovery-server') {
 
 project(':statistics-service') {
 	dependencies {
+		compile('org.springframework.cloud:spring-cloud-starter-hystrix')
 	}
 }
 
@@ -117,6 +118,7 @@ project(':edge-server') {
 
 project(':monitor') {
 	dependencies {
+		compile 'org.springframework.cloud:spring-cloud-starter-turbine'
 		compile 'org.springframework.cloud:spring-cloud-starter-hystrix-dashboard'
 	}
 }
